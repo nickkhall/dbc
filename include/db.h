@@ -5,22 +5,22 @@
 
 extern const char SEARCH_BY_ID_QUERY[];
 
-PGresult* empman_rpc_db_query(PGconn* conn,
+PGresult* libdbc_db_query(PGconn* conn,
                   const char* query,
                   const char* const* queryParams,
                   const int num_of_queries);
 
-PGresult* empman_rpc_db_query_by_id(const char* const* query_params, const char* sql_info);
+PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info);
 
-PGresult* empman_rpc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info);
+PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info);
 
-void empman_rpc_db_clean_up(PGconn* conn, PGresult* res);
+void libdbc_db_clean_up(PGconn* conn, PGresult* res);
 
-void empman_rpc_db_disconnect(PGconn* conn);
+void libdbc_db_disconnect(PGconn* conn);
 
 /*
  * ------------------------------------------
- * function: empman_rpc_db_convert_pq_data
+ * function: libdbc_db_convert_pq_data
  * ------------------------------------------
  * params  : 
  *          > conn - pointer to PGconn type
@@ -30,7 +30,7 @@ void empman_rpc_db_disconnect(PGconn* conn);
  * and a connection to a database
  * ------------------------------------------
  */
-char** empman_rpc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row);
+char** libdbc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row);
 
 #endif
 

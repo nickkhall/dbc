@@ -10,7 +10,7 @@ const char SEARCH_BY_ID_QUERY[] = "SELECT * FROM employees WHERE id = $1 OR firs
 
 /*
  * -----------------------------------------------------------------------------
- * function: empman_rpc_db_query
+ * function: libdbc_db_query
  * -----------------------------------------------------------------------------
  * params:   
  *         > query          - constant char*
@@ -20,7 +20,7 @@ const char SEARCH_BY_ID_QUERY[] = "SELECT * FROM employees WHERE id = $1 OR firs
  * returns:  pointer to PGresult type
  * -----------------------------------------------------------------------------
  */
-PGresult* empman_rpc_db_query(PGconn* conn,
+PGresult* libdbc_db_query(PGconn* conn,
                   const char* query,
                   const char* const* query_params,
                   const int num_of_queries)
@@ -34,7 +34,7 @@ PGresult* empman_rpc_db_query(PGconn* conn,
   PGresult* res = PQexec(conn, "BEGIN");
   if (PQresultStatus(res) != PGRES_COMMAND_OK) {
     PQclear(res);
-    empman_rpc_db_disconnect(conn);
+    libdbc_db_disconnect(conn);
     exit(1);
   }
 
@@ -48,14 +48,14 @@ PGresult* empman_rpc_db_query(PGconn* conn,
   if (PQresultStatus(res) != PGRES_TUPLES_OK) {
     printf("ERROR:: RPC - %s\n", PQerrorMessage(conn));
     PQclear(res);
-    empman_rpc_db_disconnect(conn);
+    libdbc_db_disconnect(conn);
     exit(1);
   }
 
   PGresult* response = (PGresult*) malloc(sizeof(res));
   if (!response) {
-    printf("ERROR:: RPC - Failed to allocate memory for postgres response in empman_rpc_db_query\n");
-    empman_rpc_db_disconnect(conn);
+    printf("ERROR:: RPC - Failed to allocate memory for postgres response in libdbc_db_query\n");
+    libdbc_db_disconnect(conn);
     free((char*)query_params);
     exit(1);
   }
@@ -63,7 +63,7 @@ PGresult* empman_rpc_db_query(PGconn* conn,
   memcpy(response, res, sizeof(struct PGresult*));
 
   // disconnect from db
-  empman_rpc_db_disconnect(conn);
+  libdbc_db_disconnect(conn);
 
   return res;
 };
@@ -71,17 +71,17 @@ PGresult* empman_rpc_db_query(PGconn* conn,
 
 /*
  * --------------------------------------------------------------------
- * function: empman_rpc_db_query_by_id
+ * function: libdbc_db_query_by_id
  * --------------------------------------------------------------------
  * params:   query_params - constant pointer pointing to constant char*
  * --------------------------------------------------------------------
  * returns:  pointer to PGresult type
  * --------------------------------------------------------------------
  */
-PGresult* empman_rpc_db_query_by_id(const char* const* query_params, const char* sql_info) {
+PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info) {
   // check for query params
   if (!query_params) {
-    printf("ERROR:: RPC - Query params data is invalid in empman_rpc_db_query_by_id");
+    printf("ERROR:: RPC - Query params data is invalid in libdbc_db_query_by_id");
     exit(1);
   }
 
@@ -93,16 +93,16 @@ PGresult* empman_rpc_db_query_by_id(const char* const* query_params, const char*
   }
 
   // query db for employee
-  PGresult* res = empman_rpc_db_query(conn,
+  PGresult* res = libdbc_db_query(conn,
                             SEARCH_BY_ID_QUERY,
                             query_params, 1);
 
   // check status of postman response
   if (!res) {
-    printf("ERROR:: RPC - Failed to get PQ response from empman_rpc_db_query in empman_rpc_db_query_by_id\n");
+    printf("ERROR:: RPC - Failed to get PQ response from libdbc_db_query in libdbc_db_query_by_id\n");
     PQclear(res);
     free(res);
-    empman_rpc_db_disconnect(conn);
+    libdbc_db_disconnect(conn);
     exit(1);
   }
 
@@ -116,7 +116,7 @@ PGresult* empman_rpc_db_query_by_id(const char* const* query_params, const char*
  *
  *
  */
-PGresult* empman_rpc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info) {
+PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info) {
   PGconn* conn = PQconnectdb(sql_info);
 
   if (!conn) {
@@ -125,20 +125,20 @@ PGresult* empman_rpc_db_query_post(PGresult* res, const char* const* query_param
   }
 
   if (!query_params) {
-    printf("ERROR:: RPC - Query data is invalid in empman_rpc_db_query_post");
-    empman_rpc_db_disconnect(conn);
+    printf("ERROR:: RPC - Query data is invalid in libdbc_db_query_post");
+    libdbc_db_disconnect(conn);
     exit(1);
   }
 
-  res = empman_rpc_db_query(conn,
+  res = libdbc_db_query(conn,
                 SEARCH_BY_ID_QUERY,
                 query_params, 1);
 
   if (!res) {
-    printf("ERROR:: RPC - Failed to get PQ response from empman_rpc_db_query in empman_rpc_db_query_post\n");
+    printf("ERROR:: RPC - Failed to get PQ response from libdbc_db_query in libdbc_db_query_post\n");
     PQclear(res);
     free(res);
-    empman_rpc_db_disconnect(conn);
+    libdbc_db_disconnect(conn);
     exit(1);
   }
 
@@ -147,20 +147,20 @@ PGresult* empman_rpc_db_query_post(PGresult* res, const char* const* query_param
 
 /*
  * ---------------------------------------
- * function: empman_rpc_db_disconnect
+ * function: libdbc_db_disconnect
  * ---------------------------------------
  * params  : conn - pointer to PGconn type
  * ---------------------------------------
  * Destroys a connection to a database.
  * ---------------------------------------
  */
-void empman_rpc_db_disconnect(PGconn* conn) {
+void libdbc_db_disconnect(PGconn* conn) {
   PQfinish(conn);
 };
 
 /*
  * ------------------------------------------
- * function: empman_rpc_db_clean_up
+ * function: libdbc_db_clean_up
  * ------------------------------------------
  * params  : 
  *          > conn - pointer to PGconn type
@@ -170,14 +170,14 @@ void empman_rpc_db_disconnect(PGconn* conn) {
  * and a connection to a database
  * ------------------------------------------
  */
-void empman_rpc_db_clean_up(PGconn* conn, PGresult* res) {
+void libdbc_db_clean_up(PGconn* conn, PGresult* res) {
   PQclear(res);
-  empman_rpc_db_disconnect(conn);
+  libdbc_db_disconnect(conn);
 };
 
 /*
  * ------------------------------------------
- * function: empman_rpc_db_convert_pq_data
+ * function: libdbc_db_convert_pq_data
  * ------------------------------------------
  * params  : 
  *          > conn - pointer to PGconn type
@@ -187,7 +187,7 @@ void empman_rpc_db_clean_up(PGconn* conn, PGresult* res) {
  * and a connection to a database
  * ------------------------------------------
  */
-char** empman_rpc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row) {
+char** libdbc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row) {
   for (int col = 0; col < 11; col++) {
     const char* current_pq = PQgetvalue(res, row, col);
     unsigned long int current_pq_length = strlen(current_pq);
