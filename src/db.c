@@ -80,7 +80,7 @@ PGresult* libdbc_db_query(PGconn* conn,
  * returns:  pointer to PGresult type
  * --------------------------------------------------------------------
  */
-PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info)
+PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info, const char* query)
 {
   // check for query params
   if (!query_params)
@@ -98,7 +98,7 @@ PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql
   }
 
   // query db for employee
-  PGresult* res = libdbc_db_query(conn, SEARCH_BY_ID_QUERY, query_params, 1);
+  PGresult* res = libdbc_db_query(conn, query, query_params, 1);
 
   // check status of postman response
   if (!res)

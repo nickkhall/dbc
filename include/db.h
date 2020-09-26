@@ -10,7 +10,7 @@ PGresult* libdbc_db_query(PGconn* conn,
                   const char* const* queryParams,
                   const int num_of_queries);
 
-PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info);
+PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info, const char* query);
 
 PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info);
 
