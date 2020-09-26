@@ -6,8 +6,6 @@
 
 #include "../include/db.h"
 
-const char SEARCH_BY_ID_QUERY[] = "SELECT * FROM employees WHERE id = $1 OR first = $1 OR last = $1";
-
 /*
  * -----------------------------------------------------------------------------
  * function: libdbc_db_query
@@ -21,18 +19,20 @@ const char SEARCH_BY_ID_QUERY[] = "SELECT * FROM employees WHERE id = $1 OR firs
  * -----------------------------------------------------------------------------
  */
 PGresult* libdbc_db_query(PGconn* conn,
-                  const char* query,
-                  const char* const* query_params,
-                  const int num_of_queries)
+                          const char* query,
+                          const char* const* query_params,
+                          const int num_of_queries)
 {
-  if (!conn) {
-    printf("ERROR:: RPC - Failed to connect to postgres db.\n");
+  if (!conn)
+  {
+    printf("ERROR:: libdbc - Failed to connect to postgres db.\n");
     exit(1);
   }
 
   //PGresult* res = (PGresult*) malloc(sizeof(struct PGresult));
   PGresult* res = PQexec(conn, "BEGIN");
-  if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+  if (PQresultStatus(res) != PGRES_COMMAND_OK)
+  {
     PQclear(res);
     libdbc_db_disconnect(conn);
     exit(1);
@@ -40,21 +40,23 @@ PGresult* libdbc_db_query(PGconn* conn,
 
   PQclear(res);
 
-  res = PQexecParams(conn,
-                    query, num_of_queries,
-                    NULL, query_params, NULL,
+  res = PQexecParams(conn, query,
+                    num_of_queries, NULL,
+                    query_params, NULL,
                     NULL, 0);
 
-  if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-    printf("ERROR:: RPC - %s\n", PQerrorMessage(conn));
+  if (PQresultStatus(res) != PGRES_TUPLES_OK)
+  {
+    printf("ERROR:: libdbc - %s\n", PQerrorMessage(conn));
     PQclear(res);
     libdbc_db_disconnect(conn);
     exit(1);
   }
 
   PGresult* response = (PGresult*) malloc(sizeof(res));
-  if (!response) {
-    printf("ERROR:: RPC - Failed to allocate memory for postgres response in libdbc_db_query\n");
+  if (!response)
+  {
+    printf("ERROR:: libdbc - Failed to allocate memory for postgres response in libdbc_db_query\n");
     libdbc_db_disconnect(conn);
     free((char*)query_params);
     exit(1);
@@ -78,28 +80,30 @@ PGresult* libdbc_db_query(PGconn* conn,
  * returns:  pointer to PGresult type
  * --------------------------------------------------------------------
  */
-PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info) {
+PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info)
+{
   // check for query params
-  if (!query_params) {
-    printf("ERROR:: RPC - Query params data is invalid in libdbc_db_query_by_id");
+  if (!query_params)
+  {
+    printf("ERROR:: libdbc - Query params data is invalid..\n");
     exit(1);
   }
 
   // connect to db
   PGconn* conn = PQconnectdb(sql_info);
-  if (!conn) {
-    printf("ERROR:: RPC - Failed to connect to postgres db.\n");
+  if (!conn)
+  {
+    printf("ERROR:: libdbc - Failed to connect to database..\n");
     exit(1);
   }
 
   // query db for employee
-  PGresult* res = libdbc_db_query(conn,
-                            SEARCH_BY_ID_QUERY,
-                            query_params, 1);
+  PGresult* res = libdbc_db_query(conn, SEARCH_BY_ID_QUERY, query_params, 1);
 
   // check status of postman response
-  if (!res) {
-    printf("ERROR:: RPC - Failed to get PQ response from libdbc_db_query in libdbc_db_query_by_id\n");
+  if (!res)
+  {
+    printf("ERROR:: libdbc - Failed to get PQ response..\n");
     PQclear(res);
     free(res);
     libdbc_db_disconnect(conn);
@@ -116,26 +120,28 @@ PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql
  *
  *
  */
-PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info) {
+PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info)
+{
   PGconn* conn = PQconnectdb(sql_info);
 
-  if (!conn) {
-    printf("ERROR:: RPC - Failed to connect to postgres db\n");
+  if (!conn)
+  {
+    printf("ERROR:: libdbc - Failed to connect to database..\n");
     exit(1);
   }
 
-  if (!query_params) {
-    printf("ERROR:: RPC - Query data is invalid in libdbc_db_query_post");
+  if (!query_params)
+  {
+    printf("ERROR:: libdbc - Query data is invalid..\n");
     libdbc_db_disconnect(conn);
     exit(1);
   }
 
-  res = libdbc_db_query(conn,
-                SEARCH_BY_ID_QUERY,
-                query_params, 1);
+  res = libdbc_db_query(conn, SEARCH_BY_ID_QUERY, query_params, 1);
 
-  if (!res) {
-    printf("ERROR:: RPC - Failed to get PQ response from libdbc_db_query in libdbc_db_query_post\n");
+  if (!res)
+  {
+    printf("ERROR:: libdbc - Failed to get PQ response..\n");
     PQclear(res);
     free(res);
     libdbc_db_disconnect(conn);
@@ -187,7 +193,8 @@ void libdbc_db_clean_up(PGconn* conn, PGresult* res) {
  * and a connection to a database
  * ------------------------------------------
  */
-char** libdbc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row) {
+char** libdbc_db_convert_pq_data(char** data_pointer, PGresult* res, const int row)
+{
   for (int col = 0; col < 11; col++) {
     const char* current_pq = PQgetvalue(res, row, col);
     unsigned long int current_pq_length = strlen(current_pq);
