@@ -120,7 +120,7 @@ PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql
  *
  *
  */
-PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info)
+PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info, const char* query)
 {
   PGconn* conn = PQconnectdb(sql_info);
 
@@ -137,7 +137,7 @@ PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, c
     exit(1);
   }
 
-  res = libdbc_db_query(conn, SEARCH_BY_ID_QUERY, query_params, 1);
+  res = libdbc_db_query(conn, query, query_params, 1);
 
   if (!res)
   {

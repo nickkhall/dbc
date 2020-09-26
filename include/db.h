@@ -12,7 +12,7 @@ PGresult* libdbc_db_query(PGconn* conn,
 
 PGresult* libdbc_db_query_by_id(const char* const* query_params, const char* sql_info, const char* query);
 
-PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info);
+PGresult* libdbc_db_query_post(PGresult* res, const char* const* query_params, const char* sql_info, const char* query);
 
 void libdbc_db_clean_up(PGconn* conn, PGresult* res);
 
