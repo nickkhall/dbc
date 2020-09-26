@@ -13,7 +13,7 @@ BUILD_DIR = bin
 INCLUDES = -I/usr/include/postgresql -I/usr/include
 LIBS = -lpq
 LIB_DIR = lib
-CFLAGS = -std=c18 -Wall
+CFLAGS = -std=c18 -Wall -g
 
 # All .c source files
 SRC = src/db.c
