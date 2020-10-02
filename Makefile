@@ -9,19 +9,21 @@ HDR = include/db.h
 
 BIN = libdbc
 BINS = libdbc.so
-BUILD_DIR = bin
+BUILD_DIR = $(LIB_DIR)
 INCLUDES = -I/usr/include/postgresql -I/usr/include
 LIBS = -lpq
 LIB_DIR = lib
-CFLAGS = -std=c18 -Wall -g
+CFLAGS = -std=c11 -Wall -g -c -fPIC
 
 # All .c source files
 SRC = src/db.c
+OBJ = lib/db.o
 
-all: $(BINS)
+link: 
+	$(CC) $(OBJ) -shared -o $(BUILD_DIR)/$(BINS) 
 
-$(BINS): $(SRC) $(HDR)
-	$(CC) $(CFLAGS) $(INCLUDES) -fPIC -shared -o $(LIB_DIR)/$@ $(SRC) -lc
+compile:
+	$(CC) $(CFLAGS) $(INCLUDES) $(SRC) -o $(OBJ) 
 
 # prevent confusion with any files named "clean"
 .PHONY: clean
