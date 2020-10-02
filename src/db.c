@@ -29,7 +29,6 @@ PGresult* libdbc_db_query(PGconn* conn,
     exit(1);
   }
 
-  //PGresult* res = (PGresult*) malloc(sizeof(struct PGresult));
   PGresult* res = PQexec(conn, "BEGIN");
   if (PQresultStatus(res) != PGRES_COMMAND_OK)
   {
