@@ -8,22 +8,15 @@ SRC = src/db.c
 HDR = include/db.h
 
 BIN = libdbc
-BINS = libdbc.so
-BUILD_DIR = $(LIB_DIR)
-INCLUDES = -I/usr/include/postgresql -I/usr/include
-LIBS = -lpq
+BINS = $(BIN).so
+BUILD_DIR = bin
 LIB_DIR = lib
-CFLAGS = -std=c11 -Wall -g -c -fPIC
+CFLAGS = -std=c18 -Wall -fPIC -shared
 
-# All .c source files
-SRC = src/db.c
-OBJ = lib/db.o
+all: $(BINS)
 
-link: 
-	$(CC) $(OBJ) -shared -o $(BUILD_DIR)/$(BINS) 
-
-compile:
-	$(CC) $(CFLAGS) $(INCLUDES) $(SRC) -o $(OBJ) 
+$(BINS): $(SRC) $(HDR)
+	$(CC) -g -DDEBUG $(CFLAGS) -o $(LIB_DIR)/$@ $(SRC) -lc
 
 # prevent confusion with any files named "clean"
 .PHONY: clean
@@ -33,7 +26,6 @@ clean:
 debug_code:
 	$(RM) debug/debug
 	$(CC) -g -o debug/debug $(SRC) $(CFLAGS) $(INCLUDES) $(LIBS)
-
 
 
 
