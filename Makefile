@@ -4,8 +4,8 @@ LDFLAGS = -o $(BIN) $(LIBPATH) $(LIBS)
 CFDEBUG = $(CFLAGS) -g -DDEBUG $(LDFLAGS)
 RM = /bin/rm -f
 
-SRC = src/dbsql.c
-HDR = include/dbsql.h
+SRC = src/dbsqlc.c
+HDR = include/dbsqlc.h
 
 BIN = libdbsqlc
 BINS = dbsqlc.so
