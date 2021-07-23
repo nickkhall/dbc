@@ -4,11 +4,11 @@ LDFLAGS = -o $(BIN) $(LIBPATH) $(LIBS)
 CFDEBUG = $(CFLAGS) -g -DDEBUG $(LDFLAGS)
 RM = /bin/rm -f
 
-SRC = src/db.c
-HDR = include/db.h
+SRC = src/dbsql.c
+HDR = include/dbsql.h
 
-BIN = libdbc
-BINS = $(BIN).so
+BIN = libdbsqlc
+BINS = dbsqlc.so
 BUILD_DIR = bin
 LIB_DIR = lib
 CFLAGS = -std=c18 -Wall -fPIC -shared

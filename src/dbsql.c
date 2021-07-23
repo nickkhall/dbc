@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <libpq-fe.h>
 
-#include "../include/db.h"
+#include "../include/dbsql.h"
 
 /*
  * -----------------------------------------------------------------------------
