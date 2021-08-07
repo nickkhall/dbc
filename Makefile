@@ -24,8 +24,5 @@ clean:
 	$(RM) $(LIB_DIR)/*.o $(LIB_DIR)/*.so
 
 debug_code:
-	$(RM) debug/debug
 	$(CC) -g -o debug/debug $(SRC) $(CFLAGS) $(INCLUDES) $(LIBS)
-
-
 
